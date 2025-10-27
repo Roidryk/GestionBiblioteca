@@ -6,6 +6,7 @@ package gestionbiblioteca;
 import gestionbiblioteca.libros;
 import java.util.ArrayList;
 import java.util.Scanner;
+import javax.smartcardio.ResponseAPDU;
 
 /**
  *
@@ -15,7 +16,7 @@ public class GestionBiblioteca {
 
     public static void añadirLibro(ArrayList<libros> lista, Scanner teclado) {
 
-        System.out.println("Introduce el nombre");
+        System.out.println("Introduce el nombre del libro");
         String nombre = teclado.nextLine();
 
         System.out.println("Introduce el autor");
@@ -35,23 +36,39 @@ public class GestionBiblioteca {
     }
 
     public static void bucasrLibro(ArrayList<libros> lista, Scanner teclado) {
-
-        System.out.println("Introduce el titulo o el autor");
-        String buscona = teclado.nextLine();
-
+        String buscona = "";
         for (libros a : lista) {
-            if ((buscona.toLowerCase()).contains(a.getAutor().toLowerCase())) {
-                System.out.println("Opcion: " + lista.indexOf(a) + " \nTitulo: " + a.getName() + " \nAutor: " + a.getAutor());
-            } else {
-                System.out.println("Autor no encontrado");
-            }
+            System.out.println("1. Buscar por libro");
+            System.out.println("2. Buscar por autor");
+            int opcion = teclado.nextInt();
+            teclado.nextLine();
 
-            if ((buscona.toLowerCase()).contentEquals(a.getName().toLowerCase())) {
-                System.out.println("Opcion: " + lista.indexOf(a) + " \nTitulo: " + a.getName());
-            } else {
+            switch (opcion) {
+                case 1:
+                    System.out.println("Introduce el libro");
+                    buscona = teclado.nextLine();
 
-                System.out.println("Libro no encontrado");
+                    if (a.getName().toLowerCase().contains(buscona.toLowerCase())) {
+                        System.out.println("Opcion: " + lista.indexOf(a) + " \nTitulo libro: " + a.getName() + " \nAutor: " + a.getAutor());
+                    } else {
+                        System.out.println("No se ha encontraddo el libro");
+                    }
+                    break;
 
+                case 2:
+
+                    System.out.println("Introduce el autor");
+                    buscona = teclado.nextLine();
+
+                    if (a.getAutor().toLowerCase().contains(buscona.toLowerCase())) {
+                        System.out.println("Opcion: " + lista.indexOf(a) + " \nTitulo libro: " + a.getName());
+                    } else {
+                        System.out.println("No se ha encontraddo el libro");
+                    }
+                    break;
+
+                default:
+                    throw new AssertionError();
             }
         }
     }
@@ -64,23 +81,36 @@ public class GestionBiblioteca {
 
                 System.out.println("Opcion: " + lista.indexOf(a) + " \nTitulo: " + a.getName() + " \nAutor: " + a.getAutor() + " \nFecha: " + a.getAnio() + " \nDisponible: " + a.isDisponible() + "\n-----------------------");
 
+                System.out.println("Desea pedir prestado algun libro del catalogo? s/n");
+                teclado.nextLine();
+                String resp = teclado.next();
+
+                if (resp.equalsIgnoreCase("s")) {
+
+                    System.out.println("Elige un libro por la posicion para pedir prestado");
+
+                    int prestado = teclado.nextInt();
+                    while (lista.size() <= prestado || prestado < 0) {
+
+                        System.out.println("El libro no existe");
+
+                        prestado = teclado.nextInt();
+
+                    }
+
+                    libros libroPrestado = lista.get(prestado);
+
+                    libroPrestado.setDisponible(false);
+
+                    System.out.println("Se ha prestado el libro correctamente...");
+
+                } else if (resp.equalsIgnoreCase("n")) {
+                    System.out.println("Saliendo....");
+                }
+
+            } else {
+                System.out.println("No hay libros disponibles");
             }
-        }
-
-        System.out.println("Elige un libro por la posicion para pedir prestado");
-        int prestado = teclado.nextInt();
-        if (lista.size() <= prestado || prestado < 0) {
-
-            System.out.println("El libro no existe");
-
-        } else {
-
-            libros libroPrestado = lista.get(prestado);
-
-            libroPrestado.setDisponible(false);
-
-            System.out.println("Se ha prestado el libro correctamente");
-
         }
 
     }
@@ -93,22 +123,35 @@ public class GestionBiblioteca {
 
                 System.out.println("Opcion: " + lista.indexOf(a) + " \nTitulo: " + a.getName() + " \nAutor: " + a.getAutor() + " \nFecha: " + a.getAnio() + " \nDisponible: " + a.isDisponible() + "\n-----------------------");
 
+                System.out.println("Desea devolver algun libro del catalogo? s/n");
+                teclado.nextLine();
+                String resp = teclado.next();
+
+                if (resp.equalsIgnoreCase("s")) {
+
+                    System.out.println("Elige un libro por la posicion para devolver");
+                    int prestado = teclado.nextInt();
+
+                    while (lista.size() <= prestado || prestado < 0) {
+
+                        System.out.println("El libro no existe");
+                        prestado = teclado.nextInt();
+
+                    }
+
+                    libros libroPrestado = lista.get(prestado);
+
+                    libroPrestado.setDisponible(true);
+
+                    System.out.println("Se ha devuelto el libro correctamente");
+                } else if (resp.equalsIgnoreCase("n")) {
+                    System.out.println("Saliendo...");
+
+                }
+
+            } else {
+                System.out.println("No hay libros disponibles");
             }
-        }
-
-        System.out.println("Elige un libro por la posicion para devolver");
-        int prestado = teclado.nextInt();
-        if (lista.size() <= prestado || prestado < 0) {
-
-            System.out.println("El libro no existe");
-
-        } else {
-
-            libros libroPrestado = lista.get(prestado);
-
-            libroPrestado.setDisponible(true);
-
-            System.out.println("Se ha devuelto el libro correctamente");
         }
 
     }
@@ -162,10 +205,10 @@ public class GestionBiblioteca {
                     break;
 
                 case 6:
-
+                    System.out.println("Fin del programa");
                     break;
                 default:
-                    throw new AssertionError();
+                    System.out.println("Error de seleccion");
             }
         }
 
