@@ -23,16 +23,21 @@ public class GestionBiblioteca {
         String autor = teclado.nextLine();
         System.out.println("Introduce fecha del libro");
         int anio = teclado.nextInt();
+       teclado.nextLine();
         System.out.println("Estado del libro");
         boolean disponible = true;
         if (disponible) {
             System.out.println("Disponible");
+         
         }
-
+        
         libros librozero = new libros(nombre, autor, anio, disponible);
         lista.add(librozero);
-        System.out.println("Libro añadido correctamente");
+        DAOLibros libreriatop = new DAOLibros();
+        libreriatop.añadir(librozero);
 
+        System.out.println("Libro añadido correctamente");
+      
     }
 
     public static void bucasrLibro(ArrayList<libros> lista, Scanner teclado) {
